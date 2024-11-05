@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "WellnessMate",
+    "name": "Wellness Mate",
     "slug": "WellnessMate",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/WellnessMateIcon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/WellnessMateIcon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -19,12 +19,17 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/WellnessMateIcon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.vietle2970.WellnessMate"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+      }
     }
   }
 }
