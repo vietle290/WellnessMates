@@ -266,7 +266,6 @@ function Body() {
     } else {
       setValidPassword(true);
     }
-  
     // Add this condition to set validPassword to true if the password is null
     if (text === "") {
       setValidPassword(true);
@@ -283,13 +282,14 @@ function Body() {
         ]}
         value={email}
         onChangeText={(text) => {
+          const trimmedText = text.trim();
           setEmail(text);
           const emailRegex =
             /^[\w-]+(\.[\w-]+)*@gmail\.com$|^[\w-]+(\.[\w-]+)*@email\.com$/;
-          if (text.trim() === "") {
+          if (trimmedText === "") {
             setValidEmailDomain(true); // Reset the validEmailDomain state when the email field is empty
           } else {
-            setValidEmailDomain(emailRegex.test(text));
+            setValidEmailDomain(emailRegex.test(trimmedText));
           }
         }}
       ></TextInput>

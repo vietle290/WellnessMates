@@ -1,5 +1,3 @@
-
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as React from "react";
 import { useState } from "react";
@@ -16,7 +14,10 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TextInput } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
-import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 import { FIREBASE_AUTH, FIRESTORE_DB } from "../../../auth/FireBaseConfig";
 import { Timestamp, collection, doc, setDoc } from "firebase/firestore";
 import { signOut } from "firebase/auth";
@@ -27,9 +28,9 @@ function Header() {
   return (
     <View style={{ padding: 20 }}>
       <View>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-      <Icon name="chevron-left" size={20} color="gray" />
-      </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Icon name="chevron-left" size={20} color="gray" />
+        </TouchableOpacity>
         <Text
           style={{
             color: "#22ba3a",
@@ -65,7 +66,6 @@ function Header() {
 }
 
 function Body() {
-
   const getHeightFromAsyncStorage = async () => {
     try {
       const height = await AsyncStorage.getItem("user_height");
@@ -105,7 +105,7 @@ function Body() {
       return null;
     }
   };
-  
+
   const getWeightFromAsyncStorage = async () => {
     try {
       const weight = await AsyncStorage.getItem("user_weight");
@@ -115,7 +115,7 @@ function Body() {
       return null;
     }
   };
-  
+
   const getWeightGFromAsyncStorage = async () => {
     try {
       const weightg = await AsyncStorage.getItem("user_weightg");
@@ -150,11 +150,11 @@ function Body() {
 
   //     const userDocRef = doc(db, "users", userId);
   //     await addDoc(userDocRef, { email, height, plan, gender, age, weight, weightg });
-  
+
   //     // Send verification email
   //     // const user = response.user;
   //     // await sendEmailVerification(user);
-  
+
   //     // Navigate to the login screen
   //     navigation.navigate("LoginScreen");
   //   } catch (error) {
@@ -162,8 +162,6 @@ function Body() {
   //     alert('Sign up failed: ' + error.message);
   //   }
   // }
-
-
 
   const signUp = async () => {
     try {
@@ -191,15 +189,15 @@ function Body() {
       } else if (plan === "Tăng cân") {
         needWeight = ((weightg - weight) * 7700) / 500;
         finalResult = tdee + 500;
-      } else if (plan ===  "Giảm cân") {
+      } else if (plan === "Giảm cân") {
         needWeight = ((weight - weightg) * 7700) / 500;
         finalResult = tdee - 500;
       }
       const finalResults = finalResult;
       const needWeights = needWeight;
-      const fat = 0.3 * finalResults / 9;
-      const protein = 0.2 * finalResults / 4;
-      const carbohydrate = 0.5 * finalResults / 4;
+      const fat = (0.3 * finalResults) / 9;
+      const protein = (0.2 * finalResults) / 4;
+      const carbohydrate = (0.5 * finalResults) / 4;
       const consumeCalo = 0;
       const consumeCarb = 0;
       const consumeProtein = 0;
@@ -210,28 +208,33 @@ function Body() {
       const dayPremium = 3; // Initialize with 3 days of premium
       const statusPremium = true; // Initially, the user has a premium status
       const dayPremiumStart = Timestamp.fromMillis(Date.now());
-      const dayPremiumEnd = Timestamp.fromMillis(Date.now() + dayPremium * 24 * 60 * 60 * 1000);
-
+      const dayPremiumEnd = Timestamp.fromMillis(
+        Date.now() + dayPremium * 24 * 60 * 60 * 1000
+      );
 
       if (password !== confirmPassword) {
         alert("Confirm passwords do not match, please try again!");
         return;
       }
-      const response = await createUserWithEmailAndPassword(auth, email, password);
+      const response = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const user = response.user;
       await sendEmailVerification(user);
-      alert("Please verify email before sign in!")
+      alert("Please verify email before sign in!");
       const userId = user.uid;
 
       // console.log(response);
 
-      const usersCollection = collection(db, 'users')
+      const usersCollection = collection(db, "users");
       const userDocRef = doc(usersCollection, userId);
       const userData = {
         userId,
         height,
         plan,
-        gender, 
+        gender,
         age,
         weight,
         weightg,
@@ -253,14 +256,14 @@ function Body() {
         statusPremium,
         dayPremiumStart,
         dayPremiumEnd,
-      }
+      };
       // await addDoc(userDocRef, { email, height, plan, gender, age, weight, weightg });
-  
+
       // Send verification email
       // const user = response.user;
       // await sendEmailVerification(user);
       await signOut(auth);
-  
+
       await setDoc(userDocRef, userData);
 
       await AsyncStorage.multiRemove([
@@ -269,23 +272,23 @@ function Body() {
         "user_age",
         "user_weight",
         "user_weightg",
-        "user_height"
+        "user_height",
       ]);
       await signOut(auth);
       // Navigate to the login screen
       navigation.navigate("LoginScreen");
     } catch (error) {
       console.log(error);
-      alert('Sign up failed: ' + error.message);
+      alert("Sign up failed: " + error.message);
     }
-  }
+  };
 
   const updatePremiumStatus = async () => {
     try {
       // Get all user documents
-      const usersCollection = collection(db, 'users');
+      const usersCollection = collection(db, "users");
       const userDocs = await getDocs(usersCollection);
-  
+
       for (const userDoc of userDocs.docs) {
         const userData = userDoc.data();
         if (userData.dayPremium > 0) {
@@ -294,17 +297,16 @@ function Body() {
           if (userData.dayPremium === 0) {
             userData.statusPremium = false;
           }
-  
+
           // Update the Firestore document
           await updateDoc(userDoc.ref, userData);
         }
       }
     } catch (error) {
-      console.error('Error updating premium status:', error);
+      console.error("Error updating premium status:", error);
     }
-  }
-  
-  
+  };
+
   // const sendEmailVerification = async (user) => {
   //   try {
   //     await sendEmailVerification(user);
@@ -322,7 +324,7 @@ function Body() {
     } else {
       setValidPassword(true);
     }
-  
+
     // Add this condition to set validPassword to true if the password is null
     if (text === "") {
       setValidPassword(true);
@@ -339,17 +341,22 @@ function Body() {
         ]}
         value={email}
         onChangeText={(text) => {
+          const trimmedText = text.trim();
+
           setEmail(text);
-          const emailRegex = /^[\w-]+(\.[\w-]+)*@gmail\.com$|^[\w-]+(\.[\w-]+)*@email\.com$/;
-          if (text.trim() === "") {
-      setValidEmailDomain(true); // Reset the validEmailDomain state when the email field is empty
-    } else {
-      setValidEmailDomain(emailRegex.test(text));
-    }
+          const emailRegex =
+            /^[\w-]+(\.[\w-]+)*@gmail\.com$|^[\w-]+(\.[\w-]+)*@email\.com$/;
+          if (trimmedText === "") {
+            setValidEmailDomain(true); // Reset the validEmailDomain state when the email field is empty
+          } else {
+            setValidEmailDomain(emailRegex.test(trimmedText));
+          }
         }}
       ></TextInput>
       {!validEmailDomain && (
-        <Text style={{ color: "red" }}>Valid email domain( @gmail.com, @email.com )</Text>
+        <Text style={{ color: "red" }}>
+          Valid email domain( @gmail.com, @email.com )
+        </Text>
       )}
       <TextInput
         placeholder="Password"
@@ -358,11 +365,12 @@ function Body() {
         value={password}
         onChangeText={handlePasswordChange}
       />
-          {!validPassword && (
-      <Text style={styles.warningText}>
-        Password must start with an uppercase letter and end with a special character
-      </Text>
-    )}
+      {!validPassword && (
+        <Text style={styles.warningText}>
+          Password must start with an uppercase letter and end with a special
+          character
+        </Text>
+      )}
       <TextInput
         placeholder="Confirm Password"
         secureTextEntry
@@ -371,10 +379,7 @@ function Body() {
         onChangeText={(text) => setConfirmPassword(text)}
       ></TextInput>
 
-      <TouchableOpacity
-        style={styles.signupButton}
-        onPress={signUp}
-      >
+      <TouchableOpacity style={styles.signupButton} onPress={signUp}>
         <Text style={styles.signupButtonText}>Sign up</Text>
       </TouchableOpacity>
     </View>
@@ -390,10 +395,10 @@ function Footer() {
       "user_age",
       "user_weight",
       "user_weightg",
-      "user_height"
+      "user_height",
     ]);
     navigation.navigate("LoginScreen");
-  }
+  };
   return (
     <View
       style={{
@@ -411,14 +416,8 @@ function Footer() {
           alignItems: "center",
         }}
       >
-
-        <TouchableOpacity
-          style={styles.loginLink}
-          onPress={navigateLogin}
-        >
-          <Text style={styles.loginLinkText}>
-            Already have an account
-          </Text>
+        <TouchableOpacity style={styles.loginLink} onPress={navigateLogin}>
+          <Text style={styles.loginLinkText}>Already have an account</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -509,9 +508,9 @@ const styles = StyleSheet.create({
     // Add image styles here
   },
   warningText: {
-    color: 'red',
+    color: "red",
     marginTop: 5,
-    width: "80%"
+    width: "80%",
   },
 });
 
